@@ -3,7 +3,6 @@ from dash.dependencies import Input, Output, State, Event
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
-from app import server
 from plotly.graph_objs import *
 
 df = pd.read_csv('SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN', index_col=4)
@@ -12,10 +11,7 @@ df.index = pd.to_datetime(df.index)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-server = app.serverapp = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
+app = dash.Dash('phys68l')
 server = app.server
 
 selected_df = df.loc[(df['bnds'] == 0) & (df['soil_layer'] == 1)]
