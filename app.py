@@ -3,6 +3,7 @@ from dash.dependencies import Input, Output, State, Event
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
+from app import server
 from plotly.graph_objs import *
 
 df = pd.read_csv('SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN', index_col=4)
@@ -84,63 +85,61 @@ app.layout = html.Div([
               [Input('year-slider', 'value'),
                Input('variable-dropdown', 'value')])
 def update_graph(year, variable):
-    try:
-        year_df = df[str(year)]
-        long = year_df['xlon'][:]
-        lat = year_df['xlat'][:]
-        variable_df = year_df[str(variable)][:]
-        data = []
 
-        data.append(
-            Scattermapbox(
-                lon=long.values,
-                lat=lat.values,
-                mode='markers',
-                hoverinfo= 'lat+lon+text',
-                text=year_df[str(variable)].values,
-                marker=dict(
-                    showscale=True,
-                    cmax=colorLimits[str(variable)][1],
-                    cmin=colorLimits[str(variable)][0],
-                    color=year_df[str(variable)].values,
-                    colorscale='RdBu'
-                ),
+    year_df = df[str(year)]
+    long = year_df['xlon'][:]
+    lat = year_df['xlat'][:]
+    variable_df = year_df[str(variable)][:]
+    data = []
 
-            )
-        )
-
-
-        layout = Layout(
-            margin=dict(t=5, b=5, r=5, l=5),
-            autosize=True,
-            height=750,
-            hovermode='closest',
-            showlegend=False,
-            mapbox=dict(
-                accesstoken=mapbox_access_token,
-                center=dict(
-                    lat=39,  # 40.7272
-                    lon=35  # -73.991251
-                ),
-                pitch=0,
-                zoom=5,
-                style='light'
+    data.append(
+        Scattermapbox(
+            lon=long.values,
+            lat=lat.values,
+            mode='markers',
+            hoverinfo= 'lat+lon+text',
+            text=year_df[str(variable)].values,
+            marker=dict(
+                showscale=True,
+                cmax=colorLimits[str(variable)][1],
+                cmin=colorLimits[str(variable)][0],
+                color=year_df[str(variable)].values,
+                colorscale='RdBu'
             ),
 
         )
-        
-        zoom = 12.0
-        latInitial = 40.7272
-        lonInitial = -73.991251
-        bearing = 0
+    )
 
-        listStr = get_lat_lon_color(selectedData, value, slider_value)
-        
-            
-        return Figure(data=data, layout=layout)
+
+    layout = Layout(
+        margin=dict(t=5, b=5, r=5, l=5),
+        autosize=True,
+        height=750,
+        hovermode='closest',
+        showlegend=False,
+        mapbox=dict(
+            accesstoken=mapbox_access_token,
+            center=dict(
+                lat=39,  # 40.7272
+                lon=35  # -73.991251
+            ),
+            pitch=0,
+            zoom=5,
+            style='light'
+        ),
+
+    )
     
-    except:
-        pass
+    zoom = 12.0
+    latInitial = 40.7272
+    lonInitial = -73.991251
+    bearing = 0
+
+    listStr = get_lat_lon_color(selectedData, value, slider_value)
+    
+        
+    return Figure(data=data, layout=layout)
+
 
 
 if __name__ == '__main__':
