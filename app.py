@@ -83,67 +83,64 @@ app.layout = html.Div([
 @app.callback(Output('map', 'figure'),
               [Input('year-slider', 'value'),
                Input('variable-dropdown', 'value')])
-def update_graph(year, variable, prevLayout):
-    year_df = df[str(year)]
-    long = year_df['xlon'][:]
-    lat = year_df['xlat'][:]
-    variable_df = year_df[str(variable)][:]
-    data = []
+def update_graph(year, variable):
+    try:
+        year_df = df[str(year)]
+        long = year_df['xlon'][:]
+        lat = year_df['xlat'][:]
+        variable_df = year_df[str(variable)][:]
+        data = []
 
-    data.append(
-        Scattermapbox(
-            lon=long.values,
-            lat=lat.values,
-            mode='markers',
-            hoverinfo= 'lat+lon+text',
-            text=year_df[str(variable)].values,
-            marker=dict(
-                showscale=True,
-                cmax=colorLimits[str(variable)][1],
-                cmin=colorLimits[str(variable)][0],
-                color=year_df[str(variable)].values,
-                colorscale='RdBu'
+        data.append(
+            Scattermapbox(
+                lon=long.values,
+                lat=lat.values,
+                mode='markers',
+                hoverinfo= 'lat+lon+text',
+                text=year_df[str(variable)].values,
+                marker=dict(
+                    showscale=True,
+                    cmax=colorLimits[str(variable)][1],
+                    cmin=colorLimits[str(variable)][0],
+                    color=year_df[str(variable)].values,
+                    colorscale='RdBu'
+                ),
+
+            )
+        )
+
+
+        layout = Layout(
+            margin=dict(t=5, b=5, r=5, l=5),
+            autosize=True,
+            height=750,
+            hovermode='closest',
+            showlegend=False,
+            mapbox=dict(
+                accesstoken=mapbox_access_token,
+                center=dict(
+                    lat=39,  # 40.7272
+                    lon=35  # -73.991251
+                ),
+                pitch=0,
+                zoom=5,
+                style='light'
             ),
 
         )
-    )
+        
+        zoom = 12.0
+        latInitial = 40.7272
+        lonInitial = -73.991251
+        bearing = 0
 
-
-    layout = Layout(
-        margin=dict(t=5, b=5, r=5, l=5),
-        autosize=True,
-        height=750,
-        hovermode='closest',
-        showlegend=False,
-        mapbox=dict(
-            accesstoken=mapbox_access_token,
-            center=dict(
-                lat=39,  # 40.7272
-                lon=35  # -73.991251
-            ),
-            pitch=0,
-            zoom=5,
-            style='light'
-        ),
-
-    )
-	
-	zoom = 12.0
-    latInitial = 40.7272
-    lonInitial = -73.991251
-    bearing = 0
-
-    listStr = get_lat_lon_color(selectedData, value, slider_value)
-
-    if(prevLayout is not None):
-        zoom = float(prevLayout['mapbox']['zoom'])
-        latInitial = float(prevLayout['mapbox']['center']['lat'])
-        lonInitial = float(prevLayout['mapbox']['center']['lon'])
-        bearing = float(prevLayout['mapbox']['bearing'])
-		
-		
-    return Figure(data=data, layout=layout)
-
+        listStr = get_lat_lon_color(selectedData, value, slider_value)
+        
+            
+        return Figure(data=data, layout=layout)
+    
+    except:
+        pass
 
 
 if __name__ == '__main__':
