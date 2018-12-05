@@ -86,7 +86,7 @@ app.layout = html.Div([
                Input('variable-dropdown', 'value')])
 def update_graph(year, variable):
 
-    year_df = df[str(year)]
+    year_df = selected_df[str(year)]
     long = year_df['xlon'][:]
     lat = year_df['xlat'][:]
     variable_df = year_df[str(variable)][:]
