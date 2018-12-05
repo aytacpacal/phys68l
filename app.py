@@ -5,7 +5,7 @@ import dash_html_components as html
 import pandas as pd
 from plotly.graph_objs import *
 
-df = pd.read_csv('dash_app\\data\\SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN', index_col=4)
+df = pd.read_csv('data\\SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN', index_col=4)
 
 df.index = pd.to_datetime(df.index)
 
