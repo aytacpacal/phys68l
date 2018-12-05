@@ -107,7 +107,9 @@ def update_graph(year, variable):
                 cmax=colorLimits[str(variable)][1],
                 cmin=colorLimits[str(variable)][0],
                 color=year_df[str(variable)].values,
-                colorscale='RdBu'
+                colorscale='RdBu',
+                size=25,
+                opacity = 0.6
             ),
 
         )
@@ -115,9 +117,9 @@ def update_graph(year, variable):
 
 
     layout = Layout(
-        margin=dict(t=5, b=5, r=5, l=5),
+        margin=dict(t=5, b=5, r=20, l=20),
         autosize=True,
-        height=750,
+        height=600,
         hovermode='closest',
         showlegend=False,
         mapbox=dict(
