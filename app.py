@@ -38,10 +38,10 @@ colorLimits = { 'tas' : [278, 297], 'pr': [0.00000138,0.00029], 'ps': [796, 1017
 
 app.layout = html.Div([
     html.Div([
-        html.H2("PHYS68L - Atmospheric and Oceanic Fluid Dynamics | Prof.Dr. Murat Türkeş | Fall 2018", style={'font-family': 'Dosis'}),
+        html.H2("PHYS68L - Atmospheric and Oceanic Fluid Dynamics - Prof.Dr. Murat Turkes - Fall 2018", style={'font-family': 'Dosis'}),
                 ], style={'marginBottom': 10, 'marginTop':25}),
     html.Div([
-        html.H3("Aytaç Paçal", style={'font-family': 'Dosis'}),
+        html.H3("Aytac Pacal", style={'font-family': 'Dosis'}),
                 ], style={'marginBottom': 10, 'marginTop':25}),
 
     dcc.Dropdown(
