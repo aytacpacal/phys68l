@@ -9,6 +9,8 @@ df = pd.read_csv('SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN',
 
 df.index = pd.to_datetime(df.index)
 
+server = app.server
+
 selected_df = df.loc[(df['bnds'] == 0) & (df['soil_layer'] == 1)]
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
