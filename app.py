@@ -83,7 +83,7 @@ app.layout = html.Div([
 @app.callback(Output('map', 'figure'),
               [Input('year-slider', 'value'),
                Input('variable-dropdown', 'value')])
-def update_graph(year, variable):
+def update_graph(year, variable, prevLayout):
     year_df = df[str(year)]
     long = year_df['xlon'][:]
     lat = year_df['xlat'][:]
@@ -127,7 +127,21 @@ def update_graph(year, variable):
         ),
 
     )
+	
+	zoom = 12.0
+    latInitial = 40.7272
+    lonInitial = -73.991251
+    bearing = 0
 
+    listStr = get_lat_lon_color(selectedData, value, slider_value)
+
+    if(prevLayout is not None):
+        zoom = float(prevLayout['mapbox']['zoom'])
+        latInitial = float(prevLayout['mapbox']['center']['lat'])
+        lonInitial = float(prevLayout['mapbox']['center']['lon'])
+        bearing = float(prevLayout['mapbox']['bearing'])
+		
+		
     return Figure(data=data, layout=layout)
 
 
