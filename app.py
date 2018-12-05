@@ -11,7 +11,8 @@ df.index = pd.to_datetime(df.index)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash('phys68l')
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
 server = app.server
 
 selected_df = df.loc[(df['bnds'] == 0) & (df['soil_layer'] == 1)]
