@@ -130,13 +130,6 @@ def update_graph(year, variable):
 
     )
     
-    zoom = 12.0
-    latInitial = 40.7272
-    lonInitial = -73.991251
-    bearing = 0
-
-    listStr = get_lat_lon_color(selectedData, value, slider_value)
-    
         
     return Figure(data=data, layout=layout)
 
