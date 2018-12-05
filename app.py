@@ -4,22 +4,27 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 from plotly.graph_objs import *
-
-df = pd.read_csv('SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN', index_col=4)
-
-df.index = pd.to_datetime(df.index)
+import os
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
 server = app.server
-
-selected_df = df.loc[(df['bnds'] == 0) & (df['soil_layer'] == 1)]
-
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
 mapbox_access_token = 'pk.eyJ1IjoiYXl0YWNwYWNhbCIsImEiOiJjam95MnpvcGYyN2syM3FsaGh5azI3YWV6In0.fzNcPtLMMjSIH2qiXTZYVg'
+
+
+if 'DYNO' in os.environ:
+    app.scripts.append_script({
+        'external_url': 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
+    })
+
+
+def initialize():
+    df = pd.read_csv('SRFHGMENA_85_1199_TR_YEARMEAN.csv', header=0, na_values='NaN', index_col=4)
+    df.index = pd.to_datetime(df.index)
+    selected_df = df.loc[(df['bnds'] == 0) & (df['soil_layer'] == 1)]
+    return selected_df
+
+
 
 colorscale=[[0.0, 'rgb(165,0,38)'], [0.1111111111111111, 'rgb(215,48,39)'],
             [0.2222222222222222, 'rgb(244,109,67)'], [0.3333333333333333, 'rgb(253,174,97)'],
@@ -30,8 +35,6 @@ colorscale=[[0.0, 'rgb(165,0,38)'], [0.1111111111111111, 'rgb(215,48,39)'],
 
 colorLimits = { 'tas' : [278, 297], 'pr': [0.00000138,0.00029], 'ps': [796, 1017]}
 
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div([
     html.Div([
@@ -138,6 +141,10 @@ def update_graph(year, variable):
     return Figure(data=data, layout=layout)
 
 
+@app.server.before_first_request
+def defineSelectedPandas():
+    global selected_df
+    selected_df = initialize()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
