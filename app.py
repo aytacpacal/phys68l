@@ -79,7 +79,24 @@ app.layout = html.Div([
     html.Div([html.P(" ", style={'font-family': 'Dosis'}),
               ], style={'marginBottom': 20, 'marginTop':20}),
 
-    dcc.Graph(id='map'),
+    html.Div(
+        [
+            html.Div(
+                [
+                    dcc.Graph(id='map')
+                ],
+                className='eight columns',
+                style={'margin-top': '20'}
+            ),
+            html.Div(
+                [dcc.Graph(id='graph'),
+                 ],
+                className='four columns',
+                style={'margin-top': '20'}
+            ),
+        ],
+        className='row'
+    ),
     html.Div(id='output')
     ])
 
@@ -115,7 +132,6 @@ def update_graph(year, variable):
         )
     )
 
-
     layout = Layout(
         margin=dict(t=5, b=5, r=20, l=20),
         autosize=True,
@@ -134,8 +150,42 @@ def update_graph(year, variable):
         ),
 
     )
-    
-        
+
+    return Figure(data=data, layout=layout)
+
+@app.callback(
+    Output('graph', 'figure'),
+    [Input('map', 'clickData'),
+     Input('year-slider', 'value'),
+     Input('variable-dropdown', 'value')])
+def update_figure(clickData,year,variable):
+
+    year_df = selected_df[str(year)]
+    initial_hist_df = selected_df['2011']
+
+    initial_hist = Histogram(
+        x = initial_hist_df[str(variable)].values,
+        opacity=0.75,
+        name='2011'
+    )
+    updated_hist = Histogram(
+        x = year_df[str(variable)].values,
+        opacity=0.5,
+        name=str(year)
+    )
+
+    data = [initial_hist, updated_hist]
+    layout = Layout(
+        title='Histogram',
+        barmode='overlay',
+        xaxis = dict(
+            title='Temperature'
+        ),
+        yaxis = dict(
+            title = 'Number of days'
+        )
+    )
+
     return Figure(data=data, layout=layout)
 
 
