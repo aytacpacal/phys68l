@@ -4,7 +4,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 from plotly.graph_objs import *
+import plotly.figure_factory as ff
 import os
+
+print os.getcwd()
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -33,7 +36,12 @@ colorscale=[[0.0, 'rgb(165,0,38)'], [0.1111111111111111, 'rgb(215,48,39)'],
             [0.8888888888888888, 'rgb(69,117,180)'], [1.0, 'rgb(49,54,149)']]
 
 
-colorLimits = { 'tas' : [278, 297], 'pr': [0.00000138,0.00029], 'ps': [796, 1017]}
+colorLimits = { 'tas' : [5.5205, 28.7251],
+                'pr': [0.00000138,0.00029],
+                'ps': [796, 1017],
+                'hfss': [1.30,76.6],
+                'sund': [3495,4752],
+                }
 
 
 app.layout = html.Div([
@@ -49,7 +57,9 @@ app.layout = html.Div([
         options=[
             {'label': 'Near-Surface Air Temperature	', 'value': 'tas'},
             {'label': 'Total Precipitation Flux', 'value': 'pr'},
-            {'label': 'Surface Pressure', 'value': 'ps'}
+            {'label': 'Surface Pressure', 'value': 'ps'},
+            {'label': 'Sensible heat flux', 'value': 'hfss'},
+            {'label': 'Duration of sunshine', 'value': 'sund'},
         ],
         value='tas'
     ),
@@ -100,7 +110,7 @@ app.layout = html.Div([
     html.Div(id='output')
     ])
 
-
+#  Update map
 @app.callback(Output('map', 'figure'),
               [Input('year-slider', 'value'),
                Input('variable-dropdown', 'value')])
@@ -109,7 +119,10 @@ def update_graph(year, variable):
     year_df = selected_df[str(year)]
     long = year_df['xlon'][:]
     lat = year_df['xlat'][:]
-    variable_df = year_df[str(variable)][:]
+    if str(variable) ==  'tas' :
+        variable_df = [x-273.15 for x in year_df[str(variable)][:]]
+    else:
+        variable_df = year_df[str(variable)][:]
     data = []
 
     data.append(
@@ -118,22 +131,23 @@ def update_graph(year, variable):
             lat=lat.values,
             mode='markers',
             hoverinfo= 'lat+lon+text',
-            text=year_df[str(variable)].values,
+            text=variable_df,
             marker=dict(
                 showscale=True,
                 cmax=colorLimits[str(variable)][1],
                 cmin=colorLimits[str(variable)][0],
-                color=year_df[str(variable)].values,
+                color=variable_df,
                 colorscale='RdBu',
                 size=25,
-                opacity = 0.6
+                opacity = 0.8
             ),
 
         )
     )
 
     layout = Layout(
-        margin=dict(t=5, b=5, r=20, l=20),
+        title = str(year),
+        margin=dict(t=30, b=5, r=20, l=20),
         autosize=True,
         height=600,
         hovermode='closest',
@@ -153,6 +167,8 @@ def update_graph(year, variable):
 
     return Figure(data=data, layout=layout)
 
+
+# Update graph
 @app.callback(
     Output('graph', 'figure'),
     [Input('map', 'clickData'),
@@ -164,12 +180,12 @@ def update_figure(clickData,year,variable):
     initial_hist_df = selected_df['2011']
 
     initial_hist = Histogram(
-        x = initial_hist_df[str(variable)].values,
+        x = [temp-273.15 for temp in initial_hist_df[str(variable)].values],
         opacity=0.75,
         name='2011'
     )
     updated_hist = Histogram(
-        x = year_df[str(variable)].values,
+        x = [temp-273.15 for temp in year_df[str(variable)].values],
         opacity=0.5,
         name=str(year)
     )
@@ -182,7 +198,7 @@ def update_figure(clickData,year,variable):
             title='Temperature'
         ),
         yaxis = dict(
-            title = 'Number of days'
+            title = 'Number of grid points'
         )
     )
 
