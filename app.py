@@ -43,6 +43,11 @@ colorLimits = { 'tas' : [5.5205, 28.7251],
                 'sund': [3495,4752],
                 }
 
+titleDict = {'tas':'Near-Surface Air Temperature',
+             'pr':'Total Precipitation Flux',
+             'ps': 'Surface Pressure',
+             'hfss' : 'Sensible heat flux',
+             'sund': 'Duration of sunshine'}
 
 app.layout = html.Div([
     html.Div([
@@ -195,7 +200,7 @@ def update_figure(clickData,year,variable):
         title='Histogram',
         barmode='overlay',
         xaxis = dict(
-            title='Temperature'
+            title=titleDict[str(variable)]
         ),
         yaxis = dict(
             title = 'Number of grid points'
