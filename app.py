@@ -130,7 +130,7 @@ def update_graph(year, variable):
         variable_df = year_df[str(variable)][:]
     data = []
 
-    data.append(
+    data.extend([
         Scattermapbox(
             lon=long.values,
             lat=lat.values,
@@ -146,9 +146,16 @@ def update_graph(year, variable):
                 size=25,
                 opacity = 0.8
             ),
-
+        ),
+        Scattermapbox(
+            lat=["41.0082"],
+            lon=["28.9784"],
+            mode='markers',
+            hoverinfo="text",
+            text=["Istanbul"],
+            # opacity=0.5,
         )
-    )
+        ])
 
     layout = Layout(
         title = str(year),
@@ -167,6 +174,62 @@ def update_graph(year, variable):
             zoom=5,
             style='light'
         ),
+        updatemenus=[
+            dict(
+                buttons=([
+                    dict(
+                        args=[{
+                            'mapbox.zoom': 5,
+                            'mapbox.center.lon': '35.42',
+                            'mapbox.center.lat': '38.79',
+                            'mapbox.bearing': 0,
+                        }],
+                        label='Reset Zoom',
+                        method='relayout'
+                    )
+                ]),
+                direction='left',
+                pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
+                showactive=False,
+                type='buttons',
+                x=0.45,
+                xanchor='left',
+                yanchor='bottom',
+                bgcolor='#323130',
+                borderwidth=1,
+                bordercolor="#6d6d6d",
+                font=dict(
+                    color="#FFFFFF"
+                ),
+                y=0.02
+            ),
+            dict(
+                buttons=([
+                    dict(
+                        args=[{
+                            'mapbox.zoom': 6,
+                            'mapbox.center.lon': '28.9784',
+                            'mapbox.center.lat': '41.0082',
+                            'mapbox.bearing': 0,
+                        }],
+                        label='Istanbul',
+                        method='relayout'
+                    ),
+                ]),
+                direction="down",
+                pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
+                showactive=False,
+                bgcolor="rgb(50, 49, 48, 0)",
+                type='buttons',
+                yanchor='bottom',
+                xanchor='left',
+                font=dict(
+                    color="#FFFFFF"
+                ),
+                x=0,
+                y=0.05
+            )
+        ]
 
     )
 
