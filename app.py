@@ -7,7 +7,6 @@ from plotly.graph_objs import *
 import plotly.figure_factory as ff
 import os
 
-print os.getcwd()
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -272,6 +271,41 @@ def update_figure(clickData,year,variable):
 
     return Figure(data=data, layout=layout)
 
+
+# Update graph
+@app.callback(
+    Output('average_graph', 'figure'),
+    [Input('year-slider', 'value'),
+     Input('variable-dropdown', 'value')])
+def update_average(year,variable):
+
+    year_df = selected_df[str(year)]
+    initial_anomaly = sum([float(x) for x in selected_df['2011'][str(variable)]])/len([float(x) for x in selected_df['2011'][str(variable)]])-273.15
+    anomalyListYear, anomalyListValue, anomalyList = [],[],[]
+
+    for i in range(2011,2100):
+        anomalyListValue.append((sum(selected_df[str(i)][str(variable)].values)/len(selected_df[str(i)][str(variable)].values)-273.15)-initial_anomaly)
+        anomalyListYear.append(i)
+
+    anomalyList.extend([anomalyListYear,anomalyListValue])
+
+
+    trace0 = Scatter(
+        x=anomalyList[0],
+        y=anomalyList[1],
+        name='High 2014',
+        line=dict(
+            color=('rgb(205, 12, 24)'),
+            width=4,
+        )
+    )
+
+    layout = dict(title=titleDict[str(variable)],
+                  xaxis=dict(title='Year'),
+                  yaxis=dict(title='Anomaly'),
+                  )
+
+    return Figure(data = [trace0], layout=layout)
 
 @app.server.before_first_request
 def defineSelectedPandas():
